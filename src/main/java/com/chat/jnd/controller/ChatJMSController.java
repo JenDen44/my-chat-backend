@@ -1,9 +1,10 @@
 package com.chat.jnd.controller;
 
 import com.chat.jnd.entity.Message;
+import com.chat.jnd.service.MessageService;
 import com.chat.jnd.service.SenderService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -11,36 +12,46 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
 
+@Slf4j
 @Controller
-public class ChatController {
+public class ChatJMSController {
 
     private final SenderService sender;
     private final SimpMessageSendingOperations messagingTemplate;
+    private final MessageService messageService;
 
-    public ChatController(SenderService sender, SimpMessageSendingOperations messagingTemplate) {
+    @Autowired
+    public ChatJMSController(SenderService sender, SimpMessageSendingOperations messagingTemplate, MessageService messageService) {
         this.sender = sender;
         this.messagingTemplate = messagingTemplate;
+        this.messageService = messageService;
     }
-
-    private static final Logger logger = LoggerFactory.getLogger(ChatController.class);
 
     @MessageMapping("/chat.send-message")
     public void sendMessage(@Payload Message chatMessage, SimpMessageHeaderAccessor headerAccessor) {
         chatMessage.setSessionId(headerAccessor.getSessionId());
         sender.send("messaging", chatMessage);
-        logger.info("Sending message to /topic/public: " + chatMessage);
+
+        log.info("Sending message to /topic/public: " + chatMessage);
+
+        messageService.save(chatMessage);
+
         messagingTemplate.convertAndSend("/topic/public", chatMessage);
-        logger.info("Message sent to /topic/public: " + chatMessage);
+
+        log.info("Message sent to /topic/public: " + chatMessage);
     }
 
-    @MessageMapping("/chat.add-player")
+    @MessageMapping("/chat.add-user")
     @SendTo("/topic/public")
-    public Message addPlayer(
-            @Payload Message chatMessage,
-            SimpMessageHeaderAccessor headerAccessor
-    ) {
+    public Message addPlayer(@Payload Message chatMessage, SimpMessageHeaderAccessor headerAccessor) {
+        log.info("chat.add-user, added new user");
+
         if (headerAccessor.getSessionAttributes() != null) {
-            headerAccessor.getSessionAttributes().put("username", chatMessage.getSenderToken());
+            log.info("For headerAccessor set new token session attribute");
+
+            messageService.save(chatMessage);
+
+            headerAccessor.getSessionAttributes().put("token", chatMessage.getSenderToken());
         }
 
         return chatMessage;

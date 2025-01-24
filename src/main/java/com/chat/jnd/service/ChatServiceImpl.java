@@ -22,10 +22,8 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public Chat get(Integer id) {
-        var chat = chatRepo.findById(id).orElseThrow
+        return chatRepo.findById(id).orElseThrow
                 (() -> new ChatNotFoundException("GameInfo with id is not found in DB by id " + id));
-
-        return chat;
     }
 
     @Override
@@ -45,10 +43,9 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public void deleteChat(Integer id) {
-        get(id);
-        chatRepo.deleteById(id);
+    public Chat getCurrentChatByToken(String token) {
+        return chatRepo.findByToken(token).orElseThrow
+                (() -> new ChatNotFoundException("Chat is not found with token " +  token));
     }
-
 }
 

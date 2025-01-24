@@ -13,5 +13,5 @@ public interface ChatService {
 
     public ChatResponse save(ChatCreateRequest chat);
 
-    public void deleteChat(Integer id);
+    public Chat getCurrentChatByToken(String token);
 }

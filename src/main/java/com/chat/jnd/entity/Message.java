@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 
 @Data
 @AllArgsConstructor
@@ -13,21 +15,22 @@ import lombok.NoArgsConstructor;
 @Builder
 @Table(name = "messages")
 @Entity
-public class Message {
+public class Message implements Serializable {
+    static final long serialVersionUID = -8444096321771764676L;
 
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        @Id
-        private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    private Integer id;
 
-        private MessageType type;
+    private MessageType type;
 
-        private String content;
+    private String content;
 
-        private String senderToken;
+    private String senderToken;
 
-        private String sessionId;
+    private String sessionId;
 
-        @ManyToOne
-        @JoinColumn(name="chat_id", nullable=false)
-        private Chat chat;
+    @ManyToOne
+    @JoinColumn(name="chat_id", nullable=false)
+    private Chat chat;
 }
