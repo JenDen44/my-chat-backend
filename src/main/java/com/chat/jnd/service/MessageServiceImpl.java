@@ -31,11 +31,6 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public Message get(Integer id) {
-        return null;
-    }
-
-    @Override
     public Message save(Message message) {
         Chat currentChat = chatService.getCurrentChatByToken(message.getSenderToken());
         message.setChat(currentChat);
@@ -45,19 +40,14 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public List<MessageDto> findAllMessagesForCurrentUserByToken(HttpServletRequest request, Integer limit, Integer lastId) {
         String token = tokenService.resolveToken(request);
-        List<MessageDto> messages = null;
+        List<Message> messages =  lastId == 0 ?
+                messageRepo.findMessagesByToken(token, limit) :
+                messageRepo.findMessagesByParams(token, limit, lastId);
 
-        if (lastId == 0) {
-            messages = messageRepo.findMessagesByToken(token, limit).stream()
-                    .map(messageMapper::messageToMessageDto)
-                    .collect(Collectors.toList());
-        } else {
-            messages = messageRepo.findMessagesByParams(token, limit, lastId).stream()
-                    .map(messageMapper::messageToMessageDto)
-                    .collect(Collectors.toList());
-        }
-
-        return messages;
+        return messages
+                .stream()
+                .map(messageMapper::messageToMessageDto)
+                .collect(Collectors.toList());
     }
 }
 

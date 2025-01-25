@@ -10,8 +10,6 @@ import java.util.List;
 @Service
 public interface MessageService {
 
-    public Message get(Integer id);
-
     public Message save(Message message);
 
     List<MessageDto> findAllMessagesForCurrentUserByToken(HttpServletRequest request, Integer limit, Integer lastId);
