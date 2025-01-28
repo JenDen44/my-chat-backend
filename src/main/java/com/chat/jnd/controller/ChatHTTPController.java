@@ -7,6 +7,7 @@ import com.chat.jnd.entity.MessageDto;
 import com.chat.jnd.service.ChatService;
 import com.chat.jnd.service.MessageService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -33,14 +34,14 @@ public class ChatHTTPController {
 
     @PostMapping("/send")
     @ResponseStatus(HttpStatus.OK)
-    public void send(@RequestBody Message message) {
+    public void send(@RequestBody @Valid Message message) {
         kafkaTemplate.send("messaging", message);
         messagingTemplate.convertAndSend("/topic/public", message);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
-    public ChatResponse createChat(@RequestBody ChatCreateRequest request) {
+    public ChatResponse createChat(@RequestBody @Valid ChatCreateRequest request) {
 
        ChatResponse chatResponse = chatService.save(request);
 

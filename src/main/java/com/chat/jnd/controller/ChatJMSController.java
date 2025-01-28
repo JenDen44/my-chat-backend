@@ -3,6 +3,7 @@ package com.chat.jnd.controller;
 import com.chat.jnd.entity.Message;
 import com.chat.jnd.service.MessageService;
 import com.chat.jnd.service.SenderService;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -28,7 +29,7 @@ public class ChatJMSController {
     }
 
     @MessageMapping("/chat.send-message")
-    public void sendMessage(@Payload Message chatMessage, SimpMessageHeaderAccessor headerAccessor) {
+    public void sendMessage(@Payload @Valid Message chatMessage, SimpMessageHeaderAccessor headerAccessor) {
         chatMessage.setSessionId(headerAccessor.getSessionId());
         sender.send("messaging", chatMessage);
 
@@ -43,7 +44,7 @@ public class ChatJMSController {
 
     @MessageMapping("/chat.add-user")
     @SendTo("/topic/public")
-    public Message addPlayer(@Payload Message chatMessage, SimpMessageHeaderAccessor headerAccessor) {
+    public Message addPlayer(@Payload @Valid Message chatMessage, SimpMessageHeaderAccessor headerAccessor) {
         log.info("chat.add-user, added new user");
 
         if (headerAccessor.getSessionAttributes() != null) {
