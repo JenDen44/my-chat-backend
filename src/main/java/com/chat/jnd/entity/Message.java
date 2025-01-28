@@ -1,10 +1,8 @@
 package com.chat.jnd.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.io.Serializable;
 
@@ -15,6 +13,8 @@ import java.io.Serializable;
 @Builder
 @Table(name = "messages")
 @Entity
+@EqualsAndHashCode(exclude = "chat")
+@ToString(exclude = "chat")
 public class Message implements Serializable {
     static final long serialVersionUID = -8444096321771764676L;
 
@@ -30,6 +30,7 @@ public class Message implements Serializable {
 
     private String sessionId;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name="chat_id", nullable=false)
     private Chat chat;
