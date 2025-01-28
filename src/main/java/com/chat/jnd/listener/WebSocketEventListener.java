@@ -30,11 +30,6 @@ public class WebSocketEventListener {
         log.info("Received a new web socket connection");
     }
 
-
-    /*
-    When user close the window this listener is triggered and sent chat Disconnect type to subscribed user
-    * */
-
     @EventListener
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
@@ -46,6 +41,7 @@ public class WebSocketEventListener {
             chatMessage.setType(MessageType.DISCONNECT);
             chatMessage.setSenderToken(token);
             messageService.save(chatMessage);
+            log.info("Message is sent to /topic/public " + chatMessage);
             messagingTemplate.convertAndSend("/topic/public", chatMessage);
         }
     }
