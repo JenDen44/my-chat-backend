@@ -19,6 +19,7 @@
 		<java.version>21</java.version>
 		<mapstruct.version>1.5.5.Final</mapstruct.version>
 		<spingdoc.version>2.6.0</spingdoc.version>
+		<springwolf.version>1.7.0</springwolf.version>
 	</properties>
 
 	<dependencies>
@@ -65,6 +66,21 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.github.springwolf</groupId>
+			<artifactId>springwolf-kafka</artifactId>
+			<version>${springwolf.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>2.7.0</version>
+		</dependency>
+		<dependency>
+			<groupId>io.github.springwolf</groupId>
+			<artifactId>springwolf-ui</artifactId>
+			<version>${springwolf.version}</version>
 		</dependency>
 	</dependencies>
 
