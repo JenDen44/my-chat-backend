@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -33,6 +34,9 @@ public class ChatHTTPController {
     private final ChatService chatService;
     private final MessageService messageService;
 
+    @Value("${chat.topic}")
+    private String topic;
+
     @Autowired
     public ChatHTTPController(KafkaTemplate<String, Message> kafkaTemplate, SimpMessageSendingOperations messagingTemplate, ChatService chatService, MessageService messageService) {
         this.kafkaTemplate = kafkaTemplate;
@@ -48,7 +52,7 @@ public class ChatHTTPController {
     @PostMapping("/send")
     @ResponseStatus(HttpStatus.OK)
     public void send(@RequestBody @Valid Message message) {
-        kafkaTemplate.send("messaging", message);
+        kafkaTemplate.send(topic, message);
         messagingTemplate.convertAndSend("/topic/public", message);
     }
 

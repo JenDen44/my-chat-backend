@@ -4,6 +4,7 @@ import com.chat.jnd.entity.Message;
 import io.github.springwolf.bindings.kafka.annotations.KafkaAsyncOperationBinding;
 import io.github.springwolf.core.asyncapi.annotations.AsyncListener;
 import io.github.springwolf.core.asyncapi.annotations.AsyncOperation;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -19,6 +20,9 @@ public class ReceiverService {
     private final SimpMessageSendingOperations messagingTemplate;
     private final SimpUserRegistry userRegistry;
 
+    @Getter
+    private Message arrivedMessage;
+
     public ReceiverService(SimpMessageSendingOperations messagingTemplate, SimpUserRegistry userRegistry) {
         this.messagingTemplate = messagingTemplate;
         this.userRegistry = userRegistry;
@@ -33,6 +37,8 @@ public class ReceiverService {
     @KafkaAsyncOperationBinding
     public void consume(Message chatMessage) {
         log.info("Received message from Kafka: " + chatMessage);
+        arrivedMessage = chatMessage;
+
         for (SimpUser user : userRegistry.getUsers()) {
             for (SimpSession session : user.getSessions()) {
                 if (!session.getId().equals(chatMessage.getSessionId())) {

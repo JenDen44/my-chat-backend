@@ -6,6 +6,7 @@ import com.chat.jnd.service.SenderService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -21,6 +22,9 @@ public class ChatJMSController {
     private final SimpMessageSendingOperations messagingTemplate;
     private final MessageService messageService;
 
+    @Value("${chat.topic}")
+    private String topic;
+
     @Autowired
     public ChatJMSController(SenderService sender, SimpMessageSendingOperations messagingTemplate, MessageService messageService) {
         this.sender = sender;
@@ -31,7 +35,7 @@ public class ChatJMSController {
     @MessageMapping("/chat.send-message")
     public void sendMessage(@Payload @Valid Message chatMessage, SimpMessageHeaderAccessor headerAccessor) {
         chatMessage.setSessionId(headerAccessor.getSessionId());
-        sender.send("messaging", chatMessage);
+        sender.send(topic, chatMessage);
 
         log.info("Sending message to /topic/public: " + chatMessage);
 

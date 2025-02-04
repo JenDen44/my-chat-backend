@@ -20,12 +20,12 @@ import java.util.stream.Collectors;
 public class MessageServiceImpl implements MessageService {
 
     private final MessageRepository messageRepo;
-    private final ChatServiceImpl chatService;
+    private final ChatService chatService;
     private final TokenService tokenService;
     private final MessageMapper messageMapper;
 
     @Autowired
-    public MessageServiceImpl(MessageRepository messageRepo, ChatServiceImpl chatService, TokenService tokenService, MessageMapper messageMapper) {
+    public MessageServiceImpl(MessageRepository messageRepo, ChatService chatService, TokenService tokenService, MessageMapper messageMapper) {
         this.messageRepo = messageRepo;
         this.chatService = chatService;
         this.tokenService = tokenService;
