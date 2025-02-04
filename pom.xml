@@ -20,6 +20,7 @@
 		<mapstruct.version>1.5.5.Final</mapstruct.version>
 		<spingdoc.version>2.6.0</spingdoc.version>
 		<springwolf.version>1.7.0</springwolf.version>
+		<awaitility.version>3.0.0</awaitility.version>
 	</properties>
 
 	<dependencies>
@@ -81,6 +82,18 @@
 			<groupId>io.github.springwolf</groupId>
 			<artifactId>springwolf-ui</artifactId>
 			<version>${springwolf.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.awaitility</groupId>
+			<artifactId>awaitility</artifactId>
+			<version>${awaitility.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.awaitility</groupId>
+			<artifactId>awaitility-proxy</artifactId>
+			<version>${awaitility.version}</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 

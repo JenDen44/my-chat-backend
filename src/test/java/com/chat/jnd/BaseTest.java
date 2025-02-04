@@ -20,6 +20,7 @@ public class BaseTest {
     protected static final String TOKEN_1_PLAYER = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNDgiLCJpYXQiOjE3Mzc0NzUyODQsIkNvbG9yIjoiXCJ3aGl0ZVwiIn0.qNaIRsDmtr1wYw5CGikhzchV5OBBDiI3mpos4EthHQm_nOTbB9Vpmh35L1TjLOIHIUIiuXv7WNcveYliH9kmMA";
     protected static final String TOKEN_2_PLAYER = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNDgiLCJpYXQiOjE3Mzc0NzUyODQsIkNvbG9yIjoiXCJibGFja1wiIn0.dLUBEP2evJ5QGTFSUco17IVsyQVzMEiXhSJ0LQzFYLM2uGJ4zCL3Che6XggU7f9trGrxy1nk7GBYsuzOI7Upbg";
     protected List<MessageDto> messageDtos;
+    protected static  String TOPIC = "messaging";
 
     @BeforeEach
     public void setup(){
