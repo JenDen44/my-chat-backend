@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Schema(description = "Chat Request model")
-public class ChatCreateRequest {
+public class ChatRequest {
 
     @Schema(description = "tokens",
             example = "[eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxN,DgiLCJpYXQiOjE3Mzc0NzUyODQsIkNvbG9yIjoiXCJ3aG]",

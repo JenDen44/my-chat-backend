@@ -1,6 +1,6 @@
 package com.chat.jnd.controller;
 
-import com.chat.jnd.entity.ChatCreateRequest;
+import com.chat.jnd.entity.ChatRequest;
 import com.chat.jnd.entity.ChatResponse;
 import com.chat.jnd.entity.Message;
 import com.chat.jnd.entity.MessageDto;
@@ -22,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -59,27 +60,27 @@ public class ChatHTTPController {
     @Operation(summary = "Create Chat")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "The chat is created",
-                    content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ChatResponse.class)) }),
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ChatResponse.class))}),
             @ApiResponse(responseCode = "422", description = "Validation Error",
-                    content = @Content (mediaType = "application/json",
+                    content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ApiErrorValidation.class)))})
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
-    public ChatResponse createChat(@RequestBody @Valid ChatCreateRequest request) {
+    public ChatResponse createChat(@RequestBody @Valid ChatRequest request) {
 
-       ChatResponse chatResponse = chatService.save(request);
+        ChatResponse chatResponse = chatService.save(request);
 
-       return chatResponse;
+        return chatResponse;
     }
 
     @Operation(summary = "List Messages")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "The list messages",
-                    content = { @Content(mediaType = "application/json",
-                            array = @ArraySchema(schema = @Schema(implementation = MessageDto.class))) }),
+                    content = {@Content(mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = MessageDto.class)))}),
             @ApiResponse(responseCode = "422", description = "Validation Error",
-                    content = @Content (mediaType = "application/json",
+                    content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ApiErrorValidation.class)))})
     @GetMapping("/messages")
     @ResponseStatus(HttpStatus.OK)
@@ -88,5 +89,21 @@ public class ChatHTTPController {
                                          HttpServletRequest request) {
 
         return messageService.findAllMessagesForCurrentUserByToken(request, limit, lastId);
+    }
+
+    @Operation(summary = "Delete Chats")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ok",
+                    content = {@Content(mediaType = "application/json")}),
+            @ApiResponse(responseCode = "422", description = "Validation Error",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ApiErrorValidation.class))),
+            @ApiResponse(responseCode = "404", description = "Not Found Error",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ResponseStatusException.class)))})
+    @DeleteMapping
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteChats(@RequestBody ChatRequest request) {
+        chatService.deleteChatByToken(request.getTokens());
     }
 }

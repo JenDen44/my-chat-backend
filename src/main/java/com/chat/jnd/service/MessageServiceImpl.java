@@ -62,5 +62,10 @@ public class MessageServiceImpl implements MessageService {
                 .map(messageMapper::messageToMessageDto)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public void deleteMessagesByChats(List<Chat> chatsByTokens) {
+        chatsByTokens.stream().forEach(chat -> messageRepo.deleteAllByChatId(chat.getId()));
+    }
 }
 

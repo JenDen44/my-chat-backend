@@ -1,24 +1,30 @@
 package com.chat.jnd.service;
 
 import com.chat.jnd.entity.Chat;
-import com.chat.jnd.entity.ChatCreateRequest;
+import com.chat.jnd.entity.ChatRequest;
 import com.chat.jnd.entity.ChatResponse;
 import com.chat.jnd.repository.ChatRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Transactional
 public class ChatServiceImpl implements ChatService {
 
     private final ChatRepository chatRepo;
+    private final MessageService messageService;
 
     @Autowired
-    public ChatServiceImpl(ChatRepository chatRepo) {
+    public ChatServiceImpl(ChatRepository chatRepo, @Lazy MessageService messageService) {
         this.chatRepo = chatRepo;
+        this.messageService = messageService;
     }
 
     @Override
@@ -30,7 +36,7 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public ChatResponse save(ChatCreateRequest request) {
+    public ChatResponse save(ChatRequest request) {
 
         Chat chat = Chat.builder()
                 .tokens(request.getTokens())
@@ -51,6 +57,20 @@ public class ChatServiceImpl implements ChatService {
                 (() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Chat is not found with token " +  token)
                 );
+    }
+
+    @Override
+    public void deleteChatByToken(List<String> tokens) {
+        System.out.println("deleteChatByToken is called");
+        List<Chat> chatsByTokens = new ArrayList<>();
+        tokens.stream().forEach(token -> chatsByTokens.add(getCurrentChatByToken(token)));
+
+        System.out.println(chatsByTokens);
+
+        if (!chatsByTokens.isEmpty()) {
+            messageService.deleteMessagesByChats(chatsByTokens);
+            chatRepo.deleteAll();
+        }
     }
 }
 
