@@ -44,4 +44,6 @@ public interface MessageRepository extends JpaRepository<Message, Integer> {
     List<Message> findMessagesByParams(@Param("token") String token,
                                        @Param("limit") Integer limit,
                                        @Param("lastId") Integer lastId);
+
+    void deleteAllByChatId(Integer chatId);
 }

@@ -10,7 +10,7 @@ import java.util.List;
 public class BaseTest {
 
     protected Chat chat;
-    protected ChatCreateRequest request;
+    protected ChatRequest request;
     protected Message message;
     protected MessageDto messageDto;
     protected HttpHeaders header;
@@ -50,7 +50,7 @@ public class BaseTest {
                 .senderToken(message.getSenderToken())
                 .build());
 
-        request = ChatCreateRequest.builder()
+        request = ChatRequest.builder()
                 .tokens(List.of(TOKEN_1_PLAYER, TOKEN_2_PLAYER))
                 .build();
 

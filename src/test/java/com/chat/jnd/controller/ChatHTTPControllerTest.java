@@ -1,7 +1,7 @@
 package com.chat.jnd.controller;
 
 import com.chat.jnd.BaseTest;
-import com.chat.jnd.entity.ChatCreateRequest;
+import com.chat.jnd.entity.ChatRequest;
 import com.chat.jnd.entity.Message;
 import com.chat.jnd.service.ChatService;
 import com.chat.jnd.service.MessageService;
@@ -65,7 +65,7 @@ class ChatHTTPControllerTest extends BaseTest {
     @Test
     void createChat() throws Exception {
 
-        given(chatService.save(any(ChatCreateRequest.class))).willReturn(response);
+        given(chatService.save(any(ChatRequest.class))).willReturn(response);
 
         var responseFromController =
                 mvc.perform(post("/")
@@ -78,7 +78,7 @@ class ChatHTTPControllerTest extends BaseTest {
                 .andExpect(jsonPath("$.id", is(response.getId())))
                 .andExpect(jsonPath("$.tokens", is(response.getTokens())));
 
-        verify(chatService).save(any(ChatCreateRequest.class));
+        verify(chatService).save(any(ChatRequest.class));
     }
 
     @DisplayName("Test list get messages")
