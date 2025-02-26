@@ -61,15 +61,16 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public void deleteChatByToken(List<String> tokens) {
-        System.out.println("deleteChatByToken is called");
+        if (tokens.isEmpty()) {
+            return;
+        }
+
         List<Chat> chatsByTokens = new ArrayList<>();
         tokens.stream().forEach(token -> chatsByTokens.add(getCurrentChatByToken(token)));
 
-        System.out.println(chatsByTokens);
-
         if (!chatsByTokens.isEmpty()) {
             messageService.deleteMessagesByChats(chatsByTokens);
-            chatRepo.deleteAll();
+            chatRepo.deleteAll(chatsByTokens);
         }
     }
 }

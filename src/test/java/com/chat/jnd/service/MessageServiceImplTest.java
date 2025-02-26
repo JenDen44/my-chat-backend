@@ -1,6 +1,7 @@
 package com.chat.jnd.service;
 
 import com.chat.jnd.BaseTest;
+import com.chat.jnd.entity.Chat;
 import com.chat.jnd.entity.Message;
 import com.chat.jnd.entity.MessageDto;
 import com.chat.jnd.mapper.MessageMapper;
@@ -19,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -74,5 +76,15 @@ class MessageServiceImplTest extends BaseTest {
         assertEquals(messagesFromService.getFirst().getSenderToken(), message.getSenderToken());
         assertEquals(messagesFromService.getFirst().getType(), message.getType());
         assertEquals(messagesFromService.getFirst().getContent(), message.getContent());
+    }
+
+    @DisplayName("Test Delete All Messages By Chats")
+    @Test
+     void deleteMessagesByChats() {
+        List<Chat> chats = List.of(chat);
+
+        messageService.deleteMessagesByChats(chats);
+
+        verify(messageRepo, times(1)).deleteAllByChatId(anyInt());
     }
 }

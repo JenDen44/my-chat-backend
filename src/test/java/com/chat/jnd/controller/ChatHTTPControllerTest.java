@@ -17,12 +17,14 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
+
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -64,7 +66,6 @@ class ChatHTTPControllerTest extends BaseTest {
     @DisplayName("Test create chat")
     @Test
     void createChat() throws Exception {
-
         given(chatService.save(any(ChatRequest.class))).willReturn(response);
 
         var responseFromController =
@@ -96,5 +97,20 @@ class ChatHTTPControllerTest extends BaseTest {
                 .andExpect(jsonPath("$.[0].senderToken", is(messageDtos.getFirst().getSenderToken())));
 
         verify(messageService).findAllMessagesForCurrentUserByToken(any(HttpServletRequest.class), anyInt(), anyInt());
+    }
+
+    @DisplayName("Test Delete Chats")
+    @Test
+    void deleteChats() throws Exception {
+        var responseFromController =
+                mvc.perform(delete("/")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)));
+
+        responseFromController
+                .andExpect(status().isOk())
+                .andDo(print());
+
+        verify(chatService, times(1)).deleteChatByToken(any(List.class));
     }
 }
